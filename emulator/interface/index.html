@@ -9,9 +9,11 @@
 </head>
 <body>
     <div id="container">
+        <h1 id="state">Connecting ⌚</h1>
         <span>
-            <input type="range" value="7" min="1" max="14" id="ph"> 
-            <input type="range" value="23" min="1" max="100" id="o2">
+            <label id="ph-label" for="ph">ph : 7</label><input type="range" oninput="update('ph')" value="7" min="1" max="14" id="ph"> 
+            <label id="o2-label" for="o2">o2 : 23</label><input type="range" oninput="update('o2')" value="23" min="1" max="100" id="o2">
+            <button onclick="sync()" id="sync" disabled>Sync</button>
         </span>
     </div>
 </body>
@@ -21,10 +23,32 @@
         background-color: rgb(59, 57, 57);
         display: flex;
         flex-direction: column;
+        color: white;
+        font-family: sans-serif;
     }
     #container{
         margin: auto;
     }
+    #sync{
+        width: 100px;
+    }
+    button{
+        width: 50px;
+    border: #26abd6 solid;
+    background-color:#26abd6 ;
+    font-size: 15px;
+    color: rgb(59, 57, 57);
+    border-radius: 20px;
+    padding: 5px;
+    
+    }
+    button:active{
+        filter: invert();
+    }
+    button:disabled{
+        background-color: gray;
+        border: gray solid;
+    }
 </style>
-<script src="/tester.js"></script>
+<script src="tester.js"></script>
 </html>
