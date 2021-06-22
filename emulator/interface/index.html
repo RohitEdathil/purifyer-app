@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Tester</title>
+    <title>Device Emulator</title>
 
 </head>
 <body>
@@ -15,6 +15,12 @@
             <label id="o2-label" for="o2">o2 : 23</label><input type="range" oninput="update('o2')" value="23" min="1" max="100" id="o2">
             <button onclick="sync()" id="sync" disabled>Sync</button>
         </span>
+        <div id="out">
+            <div id="in">
+                <p id="from">00:00</p>
+                <p id="to">18:00</p>
+            </div>
+        </div>
     </div>
 </body>
 <style>
@@ -48,6 +54,24 @@
     button:disabled{
         background-color: gray;
         border: gray solid;
+    }
+    #out{
+        width: 600px;
+        background-color: rgb(36, 32, 32);
+        height: 20px;
+        margin-top: 20px;   
+    }
+    #in{
+        width: 450px;
+        background-color: rgb(36, 206, 36);
+        height: 100%;
+        transition: all 500ms;
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+    }
+    #from,#to{
+        margin: 0px;
     }
 </style>
 <script src="tester.js"></script>
