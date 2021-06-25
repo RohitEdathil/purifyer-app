@@ -11,7 +11,7 @@
     <div id="container">
         <h1 id="state">Connecting ⌚</h1>
         <span>
-            <label id="ph-label" for="ph">ph : 7</label><input type="range" oninput="update('ph')" value="7" min="1" max="14" id="ph"> 
+            <label id="ph-label" for="ph">ph : 7</label><input type="range" step="0.1" oninput="update('ph')" value="7" min="1" max="14" id="ph"> 
             <label id="o2-label" for="o2">o2 : 23</label><input type="range" oninput="update('o2')" value="23" min="1" max="100" id="o2">
             <button onclick="sync()" id="sync" disabled>Sync</button>
         </span>
@@ -21,6 +21,7 @@
                 <p id="to">18:00</p>
             </div>
         </div>
+        <h2 id="error">no-error</h2>
     </div>
 </body>
 <style>
@@ -34,12 +35,16 @@
     }
     #container{
         margin: auto;
+        background-color: gray;
+        padding: 20px;
+        box-shadow: 1px 1px 20px 0px rgba(0, 0, 0, 0.678);
+        border-radius: 20px;
     }
     #sync{
         width: 100px;
     }
     button{
-        width: 50px;
+
     border: #26abd6 solid;
     background-color:#26abd6 ;
     font-size: 15px;

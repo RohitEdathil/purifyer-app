@@ -1,5 +1,7 @@
 const HOST = "192.168.17.32";
 const PORT = "8080";
+const MAX_PH = 8;
+const MIN_PH = 6;
 var current_hours = 4;
 var current_minutes = 0;
 var error = "no-error";
@@ -7,9 +9,27 @@ let ws;
 function $(id) {
   return document.getElementById(id);
 }
+function setError(e) {
+  error = e;
+  send_error();
+  if (e == "no-error") {
+    $("error").style.color = "white";
+  } else {
+    $("error").style.color = "red";
+  }
+  $("error").innerHTML = e;
+}
 function sync() {
   if (ws.readyState == 1) {
     ws.send(format(["update", { o2: $("o2").value, ph: $("ph").value }]));
+  }
+  var ph = parseInt($("ph").value);
+  if (ph > MAX_PH || ph < MIN_PH) {
+    setError("ph-error");
+  } else {
+    if (error == "ph-error") {
+      setError("no-error");
+    }
   }
 }
 function send_time() {
