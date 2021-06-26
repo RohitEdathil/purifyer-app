@@ -11,7 +11,10 @@ device = None
 loggger = None
 
 
-async def log(s: str):
+async def log(*args):
+    s = ''
+    for i in args:
+        s += i
     if logger != None:
         await logger.send(s)
 
