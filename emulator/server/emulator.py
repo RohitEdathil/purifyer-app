@@ -16,7 +16,10 @@ async def log(*args):
     for i in args:
         s += str(i)
     if logger != None:
-        await logger.send(s)
+        try:
+            await logger.send(s)
+        except Exception as e:
+            print(e)
 
 
 async def register(message: dict, websocket: websockets.WebSocketServerProtocol):

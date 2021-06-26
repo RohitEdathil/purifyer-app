@@ -5,16 +5,7 @@ var current_hours = 4;
 var current_minutes = 0;
 var error = "no-error";
 let ws;
-let ws2;
 
-ws2 = new WebSocket(`wss://${HOST}`);
-ws2.onopen = () => {
-  ws2.send(format(["register", "logger"]));
-  console.log("Logger Active");
-};
-ws2.onmessage = (m) => {
-  console.log(m.data);
-};
 function $(id) {
   return document.getElementById(id);
 }
