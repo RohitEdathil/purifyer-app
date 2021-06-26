@@ -9,7 +9,7 @@ let ws2;
 
 ws2 = new WebSocket(`wss://${HOST}`);
 ws2.onopen = () => {
-  ws.send(format(["register", "logger"]));
+  ws2.send(format(["register", "logger"]));
   console.log("Logger Active");
 };
 ws2.onmessage = (m) => {
