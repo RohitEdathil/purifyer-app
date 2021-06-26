@@ -14,7 +14,7 @@ loggger = None
 async def log(*args):
     s = ''
     for i in args:
-        s += i
+        s += str(i)
     if logger != None:
         await logger.send(s)
 
