@@ -2,10 +2,10 @@ import asyncio
 import sys
 import websockets
 import socket
-from os import system
+from os import system, environ
 from json import loads, dumps
-HOST = socket.gethostbyname(socket.gethostname())
-PORT = 35535
+HOST = ""
+PORT = environ["PORT"]
 system('cls')
 
 client = None
