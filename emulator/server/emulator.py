@@ -8,7 +8,7 @@ system('cls')
 
 client = None
 device = None
-loggger = None
+logger = None
 
 
 async def log(*args):
@@ -100,7 +100,6 @@ async def run(websocket: websockets.WebSocketServerProtocol, path: str):
     async for message in websocket:
         await handle(message, websocket)
 
-log(f"Running @: ws://{HOST}:{PORT}")
 asyncio.get_event_loop().run_until_complete(
     websockets.serve(run, HOST, PORT))
 asyncio.get_event_loop().run_forever()
