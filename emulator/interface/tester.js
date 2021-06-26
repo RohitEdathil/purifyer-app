@@ -1,5 +1,5 @@
-const HOST = "192.168.17.32";
-const PORT = "8080";
+const HOST = "192.168.43.29";
+const PORT = "35535";
 const MAX_PH = 8;
 const MIN_PH = 6;
 var current_hours = 4;

@@ -63,7 +63,7 @@ class _ConnectionPopUpState extends State<ConnectionPopUp> {
     bool result = await Provider.of<Connector>(context, listen: false)
         .connect_ws(_hostField.value.text, _portField.value.text);
     setState(() => waiting = false);
-    result ? _gotoHome(context) : print('Invalid Address');
+    result ? _gotoHome(context) : print('Connection Failed');
   }
 
   void _gotoHome(BuildContext context) {

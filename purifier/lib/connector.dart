@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 
@@ -7,16 +8,21 @@ class Connector extends ChangeNotifier {
   bool connected = false;
 
   Future<bool> connect_ws(String host, String port) async {
-    print("$host $port");
+    print(Uri.parse("ws://$host${port != '' ? ":$port" : ''}").port);
     try {
       ws = await WebSocket.connect(
-        'ws://$host:$port',
+        'ws://$host${port != '' ? ":$port" : ''}',
       );
+      send({"register": "client"});
       return true;
     } catch (e) {
       print(e);
       return false;
     }
+  }
+
+  void send(Object object) {
+    ws?.add(jsonEncode(object));
   }
 }
 

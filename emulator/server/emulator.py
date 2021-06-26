@@ -5,7 +5,7 @@ import socket
 from os import system
 from json import loads, dumps
 HOST = socket.gethostbyname(socket.gethostname())
-PORT = 8080
+PORT = 35535
 system('cls')
 
 client = None
