@@ -17,10 +17,10 @@ class PurifyerApp extends StatelessWidget {
       create: (BuildContext context) => Connector(),
       child: MaterialApp(
         theme: ThemeData(
-          primaryColor: Color(0xFF417505),
-          backgroundColor: Colors.white,
-          accentColor: Color(0xFF417505),
-        ),
+            primaryColor: Color(0xFF417505),
+            backgroundColor: Colors.white,
+            accentColor: Color(0xFF417505),
+            dividerColor: Colors.grey),
         debugShowCheckedModeBanner: false,
         home: LoadingView(),
       ),

@@ -101,7 +101,10 @@ async def run(websocket: websockets.WebSocketServerProtocol, path: str):
     if websocket.state == 1:
         await log(websocket.remote_address, ": Connected")
     async for message in websocket:
-        await handle(message, websocket)
+        try:
+            await handle(message, websocket)
+        except Exception as e:
+            print(e)
 
 asyncio.get_event_loop().run_until_complete(
     websockets.serve(run, HOST, PORT))
