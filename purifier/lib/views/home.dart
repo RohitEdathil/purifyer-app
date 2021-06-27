@@ -34,6 +34,10 @@ class HomeView extends StatelessWidget {
             flex: 3,
             child: Stack(
               children: [
+                FractionallySizedBox(
+                  heightFactor: 0.8,
+                  child: Center(child: PurifierPhoto()),
+                ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
@@ -60,6 +64,29 @@ class HomeView extends StatelessWidget {
           SensorDisplay()
         ],
       ),
+    );
+  }
+}
+
+class PurifierPhoto extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final current_time = DateTime.now().hour * 60 + DateTime.now().minute;
+    final time = Provider.of<Connector>(context).time;
+    bool light =
+        current_time >= time && current_time <= time + 360 ? false : true;
+    return Stack(
+      children: [
+        Image.asset(
+          'assets/1.png',
+        ),
+        Opacity(
+          opacity: light ? 1 : 0,
+          child: Image.asset(
+            'assets/2.png',
+          ),
+        ),
+      ],
     );
   }
 }
