@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:purifier/connector.dart';
+import 'package:purifier/views/error.dart';
 
 class HomeView extends StatelessWidget {
   void _timePopup(context) {
@@ -12,59 +13,61 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
-        elevation: 0,
-        toolbarHeight: 150,
-        centerTitle: true,
-        title: Text(
-          "Purifyer",
-          style: TextStyle(
-            fontSize: 54,
-            fontWeight: FontWeight.w300,
-            color: Theme.of(context).accentColor,
-          ),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Stack(
-              children: [
-                FractionallySizedBox(
-                  heightFactor: 0.8,
-                  child: Center(child: PurifierPhoto()),
+    return Provider.of<Connector>(context).error != ErrorType.noError
+        ? ErrorView()
+        : Scaffold(
+            backgroundColor: Theme.of(context).backgroundColor,
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).backgroundColor,
+              elevation: 0,
+              toolbarHeight: 150,
+              centerTitle: true,
+              title: Text(
+                "Purifyer",
+                style: TextStyle(
+                  fontSize: 54,
+                  fontWeight: FontWeight.w300,
+                  color: Theme.of(context).accentColor,
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).backgroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                              color: Theme.of(context).dividerColor)
-                        ]),
-                    child: IconButton(
-                      icon: Icon(Icons.light_outlined, size: 35),
-                      color: Theme.of(context).accentColor,
-                      onPressed: () => _timePopup(context),
-                    ),
+              ),
+            ),
+            body: Column(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Stack(
+                    children: [
+                      FractionallySizedBox(
+                        heightFactor: 0.8,
+                        child: Center(child: PurifierPhoto()),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).backgroundColor,
+                              boxShadow: [
+                                BoxShadow(
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3),
+                                    color: Theme.of(context).dividerColor)
+                              ]),
+                          child: IconButton(
+                            icon: Icon(Icons.light_outlined, size: 35),
+                            color: Theme.of(context).accentColor,
+                            onPressed: () => _timePopup(context),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
+                ),
+                SensorDisplay()
               ],
             ),
-          ),
-          SensorDisplay()
-        ],
-      ),
-    );
+          );
   }
 }
 
@@ -74,7 +77,7 @@ class PurifierPhoto extends StatelessWidget {
     final current_time = DateTime.now().hour * 60 + DateTime.now().minute;
     final time = Provider.of<Connector>(context).time;
     bool light =
-        current_time >= time && current_time <= time + 360 ? false : true;
+        current_time >= time && current_time <= time + 1080 ? true : false;
     return Stack(
       children: [
         Image.asset(

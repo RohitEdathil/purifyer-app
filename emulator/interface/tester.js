@@ -23,7 +23,7 @@ function sync() {
   if (ws.readyState == 1) {
     ws.send(format(["update", { o2: $("o2").value, ph: $("ph").value }]));
   }
-  var ph = parseInt($("ph").value);
+  var ph = parseFloat($("ph").value);
   if (ph > MAX_PH || ph < MIN_PH) {
     setError("ph-error");
   } else {
