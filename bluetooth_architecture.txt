@@ -1,0 +1,31 @@
+Overview
+--------
+Time
+- Clock: HH:MM:SS | Settable
+- Schedule: Number(HH:MM) | Read and Write
+
+Sensor
+- O2: %(0-100) | Read Only | Notifyable
+- pH: 1-14 | Read Only | Notifyable
+
+Error
+- code: (
+	0 - no error,
+	1 - pH error,
+	2 - Unknown error,
+	) | Read Only | Notifyable
+
+
+UUID
+-----
+- Services :
+	- Time : 4dece2b8-eb84-4ec2-b107-55b2ba01ccf3
+	- Sensors : 5383b89a-3522-4d06-902b-d81eb6f1fe80
+	- Error : 45585d0d-7ca0-4dfb-beee-635a12ad0a1c
+
+- Characteristics :
+	- Clock : 18c4523c-bc22-43cb-8c8d-f35feda7f258
+	- Schedule : c872dd7d-b16e-4001-b183-2a92b3881a51
+	- O2 : 54aed7c2-99d4-4551-b5aa-9ef9a31c61f5
+	- pH : c0b7d202-cf73-4913-9c61-f4b50eb98678
+	- errorVal : 364e6a2c-ed70-405f-bed9-8413bfbf2ea0
