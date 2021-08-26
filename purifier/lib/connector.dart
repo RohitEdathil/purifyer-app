@@ -1,99 +1,88 @@
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:purifier/uuids.dart';
 
 class Connector extends ChangeNotifier {
+  static const String deviceId = "80:7D:3A:B8:2F:76";
+
   bool connected = false;
+  bool isScanning = true;
 
   double ph = 7;
   int o2 = 23;
   ErrorType error = ErrorType.noError;
   int time = 120;
-  BluetoothCharacteristic? scheduleCharacteristic;
 
-  Future<void> connect() async {
-    final bluetooth = FlutterBlue.instance;
-    print(await bluetooth.connectedDevices);
-    await bluetooth.startScan(
-      timeout: Duration(seconds: 10),
-      withServices: [TIME, SENSORS, ERROR],
-    );
-    bluetooth.scanResults.listen((results) async {
-      if (results.isNotEmpty) {
-        final device = results[0].device;
-        await device.connect(timeout: Duration(seconds: 10));
+  FlutterReactiveBle ble = FlutterReactiveBle();
+  final clock = QualifiedCharacteristic(
+      characteristicId: CLOCK, serviceId: TIME, deviceId: deviceId);
+  final schedule = QualifiedCharacteristic(
+      characteristicId: SCHEDULE, serviceId: TIME, deviceId: deviceId);
+  final phCharacteristic = QualifiedCharacteristic(
+      characteristicId: PH, serviceId: SENSORS, deviceId: deviceId);
+  final o2Characteristic = QualifiedCharacteristic(
+      characteristicId: O2, serviceId: SENSORS, deviceId: deviceId);
+  final errorCharacteristic = QualifiedCharacteristic(
+      characteristicId: CODE, serviceId: ERROR, deviceId: deviceId);
 
-        device.state.listen((state) async {
-          if (state == BluetoothDeviceState.disconnected) {
-            disconnected();
-          }
+  Future<void> connect({re = false}) async {
+    int preScan = 2;
+    if (re) {
+      preScan = 10;
+      isScanning = true;
+      notifyListeners();
+    }
+    permissions();
+    ble
+        .connectToAdvertisingDevice(
+      id: deviceId,
+      withServices: [TIME, ERROR, SENSORS],
+      prescanDuration: Duration(seconds: preScan),
+      connectionTimeout: Duration(seconds: 10),
+    )
+        .listen((event) {
+      if (event.connectionState == DeviceConnectionState.disconnected) {
+        disconnected();
+      }
+      if (event.connectionState == DeviceConnectionState.connected) {
+        final currentTime = DateTime.now();
+        ble.writeCharacteristicWithoutResponse(clock, value: [
+          currentTime.year - 2000,
+          currentTime.month,
+          currentTime.day,
+          currentTime.hour,
+          currentTime.minute,
+          currentTime.second,
+        ]);
+        ble.readCharacteristic(schedule).then((value) {
+          time = value[0] * 60 + value[1];
         });
-
-        device.discoverServices().then((services) {
-          services.forEach((service) {
-            // Time Service
-            if (service.uuid == TIME) {
-              service.characteristics.forEach((characteristic) async {
-                // Clock Syncing
-                if (characteristic.uuid == CLOCK) {
-                  final time = DateTime.now().toUtc();
-                  await characteristic.write([
-                    time.year,
-                    time.month,
-                    time.day,
-                    time.hour,
-                    time.minute,
-                    time.second,
-                  ]);
-                }
-                // Schedule Characteristic
-                if (characteristic.uuid == SCHEDULE) {
-                  scheduleCharacteristic = characteristic;
-                  final current = await characteristic.read();
-                  time = current[0] * 60 + current[1];
-                }
-              });
-            }
-
-            // Sensors Service
-            if (service.uuid == SENSORS) {
-              service.characteristics.forEach((characteristic) {
-                // Ph Characteristic
-                if (characteristic.uuid == PH) {
-                  characteristic.value.listen((value) async {
-                    ph = value[0] / 10;
-                    notifyListeners();
-                  });
-                }
-                // O2 Characteristic
-                if (characteristic.uuid == O2) {
-                  characteristic.value.listen((value) async {
-                    o2 = value[0];
-                    notifyListeners();
-                  });
-                }
-              });
-            }
-
-            // Error Service
-            if (service.uuid == ERROR) {
-              service.characteristics.forEach((characteristic) {
-                // Error Characteristic
-                if (characteristic.uuid == CODE) {
-                  characteristic.value.listen((value) async {
-                    error = errorType(value[0]);
-                  });
-                }
-              });
-            }
-          });
+        ble.subscribeToCharacteristic(errorCharacteristic).listen((value) {
+          error = errorType(value[0]);
+          notifyListeners();
         });
+        ble.subscribeToCharacteristic(phCharacteristic).listen((value) {
+          ph = value[0] / 10;
+          notifyListeners();
+        });
+        ble.subscribeToCharacteristic(o2Characteristic).listen((value) {
+          o2 = value[0];
+          notifyListeners();
+        });
+        isScanning = false;
         connected = true;
-        bluetooth.stopScan();
         notifyListeners();
       }
+    }).onDone(() {
+      isScanning = false;
+      notifyListeners();
     });
-    bluetooth.stopScan();
+  }
+
+  void permissions() async {
+    await Permission.bluetooth.request();
+    await Permission.location.request();
   }
 
   void setTime(int t) {
@@ -107,7 +96,8 @@ class Connector extends ChangeNotifier {
   }
 
   void sendTime() {
-    scheduleCharacteristic?.write([time ~/ 60, time % 60]);
+    ble.writeCharacteristicWithResponse(schedule,
+        value: [time ~/ 60, time % 60]);
   }
 }
 

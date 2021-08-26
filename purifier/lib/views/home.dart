@@ -5,6 +5,7 @@ import 'package:purifier/components/sensor_display.dart';
 import 'package:purifier/components/time_popup.dart';
 import 'package:purifier/connector.dart';
 import 'package:purifier/views/error.dart';
+import 'package:purifier/views/loading.dart';
 
 class HomeView extends StatelessWidget {
   void _timePopup(context) {
@@ -16,6 +17,10 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!Provider.of<Connector>(context).connected) {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (BuildContext context) => LoadingView()));
+    }
     return Provider.of<Connector>(context).error != ErrorType.noError
         ? ErrorView()
         : Scaffold(

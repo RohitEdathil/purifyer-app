@@ -29,7 +29,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   lottie: ^1.0.1
   provider: ^5.0.0
-  flutter_blue: ^0.8.0
+  flutter_reactive_ble: ^4.0.0
+  permission_handler: ^8.1.4+2
 
 dev_dependencies:
   flutter_test:
