@@ -26,26 +26,27 @@ class Connector extends ChangeNotifier {
   final errorCharacteristic = QualifiedCharacteristic(
       characteristicId: CODE, serviceId: ERROR, deviceId: deviceId);
 
-  Future<void> connect({re = false}) async {
-    int preScan = 2;
-    if (re) {
-      preScan = 10;
-      isScanning = true;
-      notifyListeners();
-    }
+  void reconnect() {
+    isScanning = true;
+    notifyListeners();
+    connect();
+  }
+
+  Future<void> connect() async {
+    print("Connect Called");
     permissions();
     ble
         .connectToAdvertisingDevice(
       id: deviceId,
       withServices: [TIME, ERROR, SENSORS],
-      prescanDuration: Duration(seconds: preScan),
-      connectionTimeout: Duration(seconds: 10),
+      prescanDuration: Duration(seconds: 5),
     )
         .listen((event) {
       if (event.connectionState == DeviceConnectionState.disconnected) {
         disconnected();
       }
       if (event.connectionState == DeviceConnectionState.connected) {
+        print("Connected");
         final currentTime = DateTime.now();
         ble.writeCharacteristicWithoutResponse(clock, value: [
           currentTime.year - 2000,
@@ -55,9 +56,18 @@ class Connector extends ChangeNotifier {
           currentTime.minute,
           currentTime.second,
         ]);
+
         ble.readCharacteristic(schedule).then((value) {
           time = value[0] * 60 + value[1];
         });
+        ble
+            .readCharacteristic(phCharacteristic)
+            .then((value) => ph = value[0] / 10);
+        ble.readCharacteristic(o2Characteristic).then((value) => o2 = value[0]);
+        ble
+            .readCharacteristic(errorCharacteristic)
+            .then((value) => error = errorType(value[0]));
+
         ble.subscribeToCharacteristic(errorCharacteristic).listen((value) {
           error = errorType(value[0]);
           notifyListeners();
@@ -75,14 +85,19 @@ class Connector extends ChangeNotifier {
         notifyListeners();
       }
     }).onDone(() {
+      print("Scan Ended");
       isScanning = false;
       notifyListeners();
     });
   }
 
   void permissions() async {
-    await Permission.bluetooth.request();
-    await Permission.location.request();
+    if (!await Permission.bluetooth.isGranted) {
+      await Permission.bluetooth.request();
+    }
+    if (!await Permission.location.isGranted) {
+      await Permission.location.request();
+    }
   }
 
   void setTime(int t) {
@@ -91,6 +106,10 @@ class Connector extends ChangeNotifier {
   }
 
   void disconnected() {
+    print("Disconnected");
+    if (connected) {
+      reconnect();
+    }
     connected = false;
     notifyListeners();
   }

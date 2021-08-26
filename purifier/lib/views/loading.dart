@@ -5,11 +5,21 @@ import 'package:provider/provider.dart';
 import 'package:purifier/connector.dart';
 import 'package:purifier/views/home.dart';
 
-class LoadingView extends StatelessWidget {
+class LoadingView extends StatefulWidget {
+  @override
+  _LoadingViewState createState() => _LoadingViewState();
+}
+
+class _LoadingViewState extends State<LoadingView> {
+  bool firstTime = true;
   @override
   Widget build(BuildContext context) {
+    print("State Changed");
     if (Provider.of<Connector>(context).connected) return HomeView();
-    Provider.of<Connector>(context, listen: false).connect();
+    if (firstTime) {
+      firstTime = false;
+      Provider.of<Connector>(context, listen: false).connect();
+    }
     final blu = FlutterReactiveBle();
     return Scaffold(
       body: StreamBuilder<BleStatus>(
@@ -34,7 +44,7 @@ class LoadingView extends StatelessWidget {
                           IconButton(
                             onPressed: () =>
                                 Provider.of<Connector>(context, listen: false)
-                                    .connect(re: true),
+                                    .reconnect(),
                             icon: Icon(Icons.refresh_rounded),
                             color: Theme.of(context).primaryColor,
                             iconSize: 40,
