@@ -9,3 +9,4 @@ final CLOCK = Uuid.parse('18c4523c-bc22-43cb-8c8d-f35feda7f258');
 final O2 = Uuid.parse('54aed7c2-99d4-4551-b5aa-9ef9a31c61f5');
 final PH = Uuid.parse('c0b7d202-cf73-4913-9c61-f4b50eb98678');
 final CODE = Uuid.parse('364e6a2c-ed70-405f-bed9-8413bfbf2ea0');
+final VALVE = Uuid.parse('a8b1030a-6d47-11ec-90d6-0242ac120003');

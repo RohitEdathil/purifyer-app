@@ -15,12 +15,12 @@ class HomeView extends StatelessWidget {
         builder: (BuildContext context) => TimePopup());
   }
 
+  void _valveToggle(context) {
+    Provider.of<Connector>(context, listen: false).toggleValve();
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (!Provider.of<Connector>(context).connected) {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (BuildContext context) => LoadingView()));
-    }
     return Provider.of<Connector>(context).error != ErrorType.noError
         ? ErrorView()
         : Scaffold(
@@ -46,7 +46,13 @@ class HomeView extends StatelessWidget {
                   child: Stack(
                     children: [
                       PurifierPhoto(),
-                      LightButton(_timePopup),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          LightButton(_timePopup),
+                          ValveButton(_valveToggle),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -78,6 +84,39 @@ class LightButton extends StatelessWidget {
         child: IconButton(
           icon: Icon(Icons.light_outlined, size: 35),
           color: Theme.of(context).accentColor,
+          onPressed: () => _onPress(context),
+        ),
+      ),
+    );
+  }
+}
+
+class ValveButton extends StatelessWidget {
+  final void Function(BuildContext context) _onPress;
+  const ValveButton(this._onPress);
+  @override
+  Widget build(BuildContext context) {
+    bool isActive = Provider.of<Connector>(context).valve == 1;
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isActive
+                ? Theme.of(context).accentColor
+                : Theme.of(context).backgroundColor,
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                  color: Theme.of(context).dividerColor)
+            ]),
+        child: IconButton(
+          icon: Icon(Icons.shower, size: 35),
+          color: !isActive
+              ? Theme.of(context).accentColor
+              : Theme.of(context).backgroundColor,
           onPressed: () => _onPress(context),
         ),
       ),

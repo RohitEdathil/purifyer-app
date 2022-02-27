@@ -4,7 +4,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:purifier/uuids.dart';
 
 class Connector extends ChangeNotifier {
-  static const String deviceId = "80:7D:3A:B8:2F:76";
+  static const String deviceId = "C8:C9:A3:FA:57:EE";
 
   bool connected = false;
   bool isScanning = true;
@@ -13,7 +13,7 @@ class Connector extends ChangeNotifier {
   int o2 = 23;
   ErrorType error = ErrorType.noError;
   int time = 120;
-
+  int valve = 0;
   FlutterReactiveBle ble = FlutterReactiveBle();
   final clock = QualifiedCharacteristic(
       characteristicId: CLOCK, serviceId: TIME, deviceId: deviceId);
@@ -25,7 +25,8 @@ class Connector extends ChangeNotifier {
       characteristicId: O2, serviceId: SENSORS, deviceId: deviceId);
   final errorCharacteristic = QualifiedCharacteristic(
       characteristicId: CODE, serviceId: ERROR, deviceId: deviceId);
-
+  final valveCharacteristic = QualifiedCharacteristic(
+      characteristicId: VALVE, serviceId: SENSORS, deviceId: deviceId);
   void reconnect() {
     isScanning = true;
     notifyListeners();
@@ -67,11 +68,13 @@ class Connector extends ChangeNotifier {
         ble
             .readCharacteristic(errorCharacteristic)
             .then((value) => error = errorType(value[0]));
-
         ble.subscribeToCharacteristic(errorCharacteristic).listen((value) {
           error = errorType(value[0]);
           notifyListeners();
         });
+        ble
+            .readCharacteristic(valveCharacteristic)
+            .then((value) => valve = value[0]);
         ble.subscribeToCharacteristic(phCharacteristic).listen((value) {
           ph = value[0] / 10;
           notifyListeners();
@@ -105,11 +108,14 @@ class Connector extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleValve() {
+    valve = valve == 0 ? 1 : 0;
+    ble.writeCharacteristicWithResponse(valveCharacteristic, value: [valve]);
+    notifyListeners();
+  }
+
   void disconnected() {
     print("Disconnected");
-    if (connected) {
-      reconnect();
-    }
     connected = false;
     notifyListeners();
   }
