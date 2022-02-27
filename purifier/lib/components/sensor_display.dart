@@ -24,7 +24,7 @@ class SensorDisplay extends StatelessWidget {
                 "${Provider.of<Connector>(context).ph}",
                 style: TextStyle(
                     fontSize: 54,
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                     fontFamily: 'KellySlab'),
               ),
             ],
@@ -51,14 +51,14 @@ class SensorDisplay extends StatelessWidget {
                     "${Provider.of<Connector>(context).o2}",
                     style: TextStyle(
                         fontSize: 50,
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         fontFamily: 'KellySlab'),
                   ),
                   Text(
                     "%",
                     style: TextStyle(
                         fontSize: 20,
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         fontFamily: 'KellySlab'),
                   ),
                 ],

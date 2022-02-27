@@ -6,15 +6,21 @@ import 'package:purifier/uuids.dart';
 class Connector extends ChangeNotifier {
   static const String deviceId = "C8:C9:A3:FA:57:EE";
 
+  // Global states
   bool connected = false;
   bool isScanning = true;
 
+  // Initial values
   double ph = 7;
   int o2 = 23;
   ErrorType error = ErrorType.noError;
   int time = 120;
   int valve = 0;
+
+  // Initializes library
   FlutterReactiveBle ble = FlutterReactiveBle();
+
+  // Initializes Characteristics
   final clock = QualifiedCharacteristic(
       characteristicId: CLOCK, serviceId: TIME, deviceId: deviceId);
   final schedule = QualifiedCharacteristic(
@@ -27,28 +33,42 @@ class Connector extends ChangeNotifier {
       characteristicId: CODE, serviceId: ERROR, deviceId: deviceId);
   final valveCharacteristic = QualifiedCharacteristic(
       characteristicId: VALVE, serviceId: SENSORS, deviceId: deviceId);
+
+  /// Reconnects to the GATT Server
   void reconnect() {
     isScanning = true;
     notifyListeners();
     connect();
   }
 
+  /// Connects to the Server
   Future<void> connect() async {
     print("Connect Called");
+    // Requests for permission if doesn't already have
     permissions();
+
+    // Connects to the server
     ble
         .connectToAdvertisingDevice(
       id: deviceId,
       withServices: [TIME, ERROR, SENSORS],
       prescanDuration: Duration(seconds: 5),
     )
+        // Listens for events
         .listen((event) {
+      // Updates states on disconnected
       if (event.connectionState == DeviceConnectionState.disconnected) {
         disconnected();
       }
+
+      // Things to do on getting connected
       if (event.connectionState == DeviceConnectionState.connected) {
         print("Connected");
+
+        // Fetches current time
         final currentTime = DateTime.now();
+
+        // Sends the current time to device
         ble.writeCharacteristicWithoutResponse(clock, value: [
           currentTime.year - 2000,
           currentTime.month,
@@ -58,20 +78,31 @@ class Connector extends ChangeNotifier {
           currentTime.second,
         ]);
 
+        // Reads the current start time for "Lights On"
         ble.readCharacteristic(schedule).then((value) {
           time = value[0] * 60 + value[1];
         });
+
+        // Reads the current pH
         ble
             .readCharacteristic(phCharacteristic)
             .then((value) => ph = value[0] / 10);
+
+        // Reads the current o2 level
         ble.readCharacteristic(o2Characteristic).then((value) => o2 = value[0]);
+
+        // Reads for the current error state
         ble
             .readCharacteristic(errorCharacteristic)
             .then((value) => error = errorType(value[0]));
+
+        // Starts listening for errors
         ble.subscribeToCharacteristic(errorCharacteristic).listen((value) {
           error = errorType(value[0]);
           notifyListeners();
         });
+
+        // Reads the current valve state
         ble
             .readCharacteristic(valveCharacteristic)
             .then((value) => valve = value[0]);

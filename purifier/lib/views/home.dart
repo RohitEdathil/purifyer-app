@@ -5,7 +5,6 @@ import 'package:purifier/components/sensor_display.dart';
 import 'package:purifier/components/time_popup.dart';
 import 'package:purifier/connector.dart';
 import 'package:purifier/views/error.dart';
-import 'package:purifier/views/loading.dart';
 
 class HomeView extends StatelessWidget {
   void _timePopup(context) {
@@ -35,7 +34,7 @@ class HomeView extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 54,
                   fontWeight: FontWeight.w300,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
@@ -83,7 +82,7 @@ class LightButton extends StatelessWidget {
             ]),
         child: IconButton(
           icon: Icon(Icons.light_outlined, size: 35),
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           onPressed: () => _onPress(context),
         ),
       ),
@@ -104,7 +103,7 @@ class ValveButton extends StatelessWidget {
         decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isActive
-                ? Theme.of(context).accentColor
+                ? Theme.of(context).colorScheme.secondary
                 : Theme.of(context).backgroundColor,
             boxShadow: [
               BoxShadow(
@@ -115,7 +114,7 @@ class ValveButton extends StatelessWidget {
         child: IconButton(
           icon: Icon(Icons.shower, size: 35),
           color: !isActive
-              ? Theme.of(context).accentColor
+              ? Theme.of(context).colorScheme.secondary
               : Theme.of(context).backgroundColor,
           onPressed: () => _onPress(context),
         ),

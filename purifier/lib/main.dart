@@ -19,9 +19,10 @@ class PurifyerApp extends StatelessWidget {
         theme: ThemeData(
             primaryColor: Color(0xFF417505),
             backgroundColor: Colors.white,
-            accentColor: Color(0xFF417505),
             dividerColor: Colors.grey,
-            errorColor: Colors.red),
+            errorColor: Colors.red,
+            colorScheme: ColorScheme.fromSwatch()
+                .copyWith(secondary: Color(0xFF417505))),
         debugShowCheckedModeBanner: false,
         home: LoadingView(),
       ),

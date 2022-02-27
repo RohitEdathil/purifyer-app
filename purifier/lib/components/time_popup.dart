@@ -28,7 +28,7 @@ class TimePopup extends StatelessWidget {
             Text(
               "Light Schedule",
               style: TextStyle(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
                 fontSize: 25,
               ),
             ),
@@ -74,13 +74,13 @@ class TimeSetter extends StatelessWidget {
           children: [
             Text(
               '0${time ~/ 60}:${time % 60 < 10 ? '0' : ''}${time % 60}',
-              style:
-                  TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary, fontSize: 20),
             ),
             Text(
               '${18 + time ~/ 60}:${time % 60 < 10 ? '0' : ''}${time % 60}',
-              style:
-                  TextStyle(color: Theme.of(context).accentColor, fontSize: 20),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary, fontSize: 20),
             ),
           ],
         ),
@@ -100,7 +100,7 @@ class TimeSetter extends StatelessWidget {
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.75 - 50,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(50)),
                 ),
               )
