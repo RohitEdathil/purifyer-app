@@ -15,7 +15,8 @@ class Connector extends ChangeNotifier {
   int o2 = 23;
   ErrorType error = ErrorType.noError;
   int time = 120;
-  int valve = 0;
+  int light = 0;
+  int auto = 0;
 
   // Initializes library
   FlutterReactiveBle ble = FlutterReactiveBle();
@@ -31,8 +32,10 @@ class Connector extends ChangeNotifier {
       characteristicId: O2, serviceId: SENSORS, deviceId: deviceId);
   final errorCharacteristic = QualifiedCharacteristic(
       characteristicId: CODE, serviceId: ERROR, deviceId: deviceId);
-  final valveCharacteristic = QualifiedCharacteristic(
-      characteristicId: VALVE, serviceId: SENSORS, deviceId: deviceId);
+  final lightCharacteristic = QualifiedCharacteristic(
+      characteristicId: LIGHT_ON, serviceId: SENSORS, deviceId: deviceId);
+  final autoCharacteristic = QualifiedCharacteristic(
+      characteristicId: AUTO, serviceId: SENSORS, deviceId: deviceId);
 
   /// Reconnects to the GATT Server
   void reconnect() {
@@ -96,10 +99,15 @@ class Connector extends ChangeNotifier {
             .readCharacteristic(errorCharacteristic)
             .then((value) => error = errorType(value[0]));
 
-        // Reads the current valve state
+        // Reads the current light state
         ble
-            .readCharacteristic(valveCharacteristic)
-            .then((value) => valve = value[0]);
+            .readCharacteristic(lightCharacteristic)
+            .then((value) => light = value[0]);
+
+        // Reads if mode is auto
+        ble
+            .readCharacteristic(autoCharacteristic)
+            .then((value) => auto = value[0]);
 
         // Starts listening for errors
         ble.subscribeToCharacteristic(errorCharacteristic).listen((value) {
@@ -140,9 +148,15 @@ class Connector extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleValve() {
-    valve = valve == 0 ? 1 : 0;
-    ble.writeCharacteristicWithResponse(valveCharacteristic, value: [valve]);
+  void toggleLight() {
+    light = light == 0 ? 1 : 0;
+    ble.writeCharacteristicWithResponse(lightCharacteristic, value: [light]);
+    notifyListeners();
+  }
+
+  void toggleAuto() {
+    auto = auto == 0 ? 1 : 0;
+    ble.writeCharacteristicWithResponse(autoCharacteristic, value: [auto]);
     notifyListeners();
   }
 

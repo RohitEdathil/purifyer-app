@@ -9,9 +9,13 @@ class PurifierPhoto extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentTime = DateTime.now().hour * 60 + DateTime.now().minute;
     final time = Provider.of<Connector>(context).time;
-    bool light =
-        currentTime >= time && currentTime <= time + 1080 ? true : false;
+    final manuallyOn = Provider.of<Connector>(context).light == 1;
+    bool isAuto = Provider.of<Connector>(context).auto == 1;
+    bool light = isAuto
+        ? (currentTime >= time && currentTime <= time + 1080 ? true : false)
+        : manuallyOn;
     final error = Provider.of<Connector>(context).error != ErrorType.noError;
+
     return FractionallySizedBox(
       heightFactor: 0.8,
       child: Center(

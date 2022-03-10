@@ -13,12 +13,17 @@ class HomeView extends StatelessWidget {
         builder: (BuildContext context) => TimePopup());
   }
 
-  void _valveToggle(context) {
-    Provider.of<Connector>(context, listen: false).toggleValve();
+  void _lightToggle(context) {
+    Provider.of<Connector>(context, listen: false).toggleLight();
+  }
+
+  void _autoToggle(context) {
+    Provider.of<Connector>(context, listen: false).toggleAuto();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isAuto = Provider.of<Connector>(context).auto == 1;
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -45,8 +50,10 @@ class HomeView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    LightButton(_timePopup),
-                    ValveButton(_valveToggle),
+                    AutoButton(_autoToggle),
+                    isAuto
+                        ? ScheduleButton(_timePopup)
+                        : LightButton(_lightToggle),
                   ],
                 ),
               ],
@@ -59,9 +66,9 @@ class HomeView extends StatelessWidget {
   }
 }
 
-class LightButton extends StatelessWidget {
+class ScheduleButton extends StatelessWidget {
   final void Function(BuildContext context) _onPress;
-  const LightButton(this._onPress);
+  const ScheduleButton(this._onPress);
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -78,7 +85,7 @@ class LightButton extends StatelessWidget {
                   color: Theme.of(context).dividerColor)
             ]),
         child: IconButton(
-          icon: Icon(Icons.light_outlined, size: 35),
+          icon: Icon(Icons.av_timer_outlined, size: 30),
           color: Theme.of(context).colorScheme.secondary,
           onPressed: () => _onPress(context),
         ),
@@ -87,12 +94,12 @@ class LightButton extends StatelessWidget {
   }
 }
 
-class ValveButton extends StatelessWidget {
+class LightButton extends StatelessWidget {
   final void Function(BuildContext context) _onPress;
-  const ValveButton(this._onPress);
+  const LightButton(this._onPress);
   @override
   Widget build(BuildContext context) {
-    bool isActive = Provider.of<Connector>(context).valve == 1;
+    bool isActive = Provider.of<Connector>(context).light == 1;
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -109,7 +116,40 @@ class ValveButton extends StatelessWidget {
                   color: Theme.of(context).dividerColor)
             ]),
         child: IconButton(
-          icon: Icon(Icons.shower, size: 35),
+          icon: Icon(Icons.light_outlined, size: 30),
+          color: !isActive
+              ? Theme.of(context).colorScheme.secondary
+              : Theme.of(context).backgroundColor,
+          onPressed: () => _onPress(context),
+        ),
+      ),
+    );
+  }
+}
+
+class AutoButton extends StatelessWidget {
+  final void Function(BuildContext context) _onPress;
+  const AutoButton(this._onPress);
+  @override
+  Widget build(BuildContext context) {
+    bool isActive = Provider.of<Connector>(context).auto == 1;
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isActive
+                ? Theme.of(context).colorScheme.secondary
+                : Theme.of(context).backgroundColor,
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                  color: Theme.of(context).dividerColor)
+            ]),
+        child: IconButton(
+          icon: Icon(Icons.brightness_auto_rounded, size: 30),
           color: !isActive
               ? Theme.of(context).colorScheme.secondary
               : Theme.of(context).backgroundColor,
