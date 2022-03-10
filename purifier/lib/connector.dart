@@ -96,16 +96,17 @@ class Connector extends ChangeNotifier {
             .readCharacteristic(errorCharacteristic)
             .then((value) => error = errorType(value[0]));
 
+        // Reads the current valve state
+        ble
+            .readCharacteristic(valveCharacteristic)
+            .then((value) => valve = value[0]);
+
         // Starts listening for errors
         ble.subscribeToCharacteristic(errorCharacteristic).listen((value) {
           error = errorType(value[0]);
           notifyListeners();
         });
 
-        // Reads the current valve state
-        ble
-            .readCharacteristic(valveCharacteristic)
-            .then((value) => valve = value[0]);
         ble.subscribeToCharacteristic(phCharacteristic).listen((value) {
           ph = value[0] / 10;
           notifyListeners();

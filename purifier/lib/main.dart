@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:purifier/connector.dart';
+import 'package:purifier/views/home.dart';
 import 'package:purifier/views/loading.dart';
 
 void main() {
@@ -25,6 +26,8 @@ class PurifyerApp extends StatelessWidget {
                 .copyWith(secondary: Color(0xFF417505))),
         debugShowCheckedModeBanner: false,
         home: LoadingView(),
+        // Uncomment the following line to force display the HomeView
+        // home: HomeView(),
       ),
     );
   }

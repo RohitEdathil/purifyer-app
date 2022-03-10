@@ -4,7 +4,6 @@ import 'package:purifier/components/dynamic_image.dart';
 import 'package:purifier/components/sensor_display.dart';
 import 'package:purifier/components/time_popup.dart';
 import 'package:purifier/connector.dart';
-import 'package:purifier/views/error.dart';
 
 class HomeView extends StatelessWidget {
   void _timePopup(context) {
@@ -20,45 +19,43 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider.of<Connector>(context).error != ErrorType.noError
-        ? ErrorView()
-        : Scaffold(
-            backgroundColor: Theme.of(context).backgroundColor,
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).backgroundColor,
-              elevation: 0,
-              toolbarHeight: 150,
-              centerTitle: true,
-              title: Text(
-                "Purifyer",
-                style: TextStyle(
-                  fontSize: 54,
-                  fontWeight: FontWeight.w300,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-            ),
-            body: Column(
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 150,
+        centerTitle: true,
+        title: Text(
+          "Purifyer",
+          style: TextStyle(
+            fontSize: 54,
+            fontWeight: FontWeight.w300,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Stack(
               children: [
-                Expanded(
-                  flex: 3,
-                  child: Stack(
-                    children: [
-                      PurifierPhoto(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          LightButton(_timePopup),
-                          ValveButton(_valveToggle),
-                        ],
-                      ),
-                    ],
-                  ),
+                PurifierPhoto(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    LightButton(_timePopup),
+                    ValveButton(_valveToggle),
+                  ],
                 ),
-                SensorDisplay()
               ],
             ),
-          );
+          ),
+          SensorDisplay()
+        ],
+      ),
+    );
   }
 }
 

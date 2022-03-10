@@ -5,6 +5,7 @@ import 'package:purifier/connector.dart';
 class SensorDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final phError = Provider.of<Connector>(context).error == ErrorType.phError;
     return Expanded(
       flex: 1,
       child: Row(
@@ -24,7 +25,9 @@ class SensorDisplay extends StatelessWidget {
                 "${Provider.of<Connector>(context).ph}",
                 style: TextStyle(
                     fontSize: 54,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: phError
+                        ? Theme.of(context).errorColor
+                        : Theme.of(context).colorScheme.secondary,
                     fontFamily: 'KellySlab'),
               ),
             ],
