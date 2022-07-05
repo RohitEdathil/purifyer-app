@@ -4,7 +4,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:purifier/uuids.dart';
 
 class Connector extends ChangeNotifier {
-  static const String deviceId = "C8:C9:A3:FA:57:EE";
+  static const String deviceId = "80:7D:3A:B8:2F:76";
 
   // Global states
   bool connected = false;
@@ -52,10 +52,9 @@ class Connector extends ChangeNotifier {
 
     // Connects to the server
     ble
-        .connectToAdvertisingDevice(
+        .connectToDevice(
       id: deviceId,
-      withServices: [TIME, ERROR, SENSORS],
-      prescanDuration: Duration(seconds: 5),
+      connectionTimeout: Duration(seconds: 10),
     )
         // Listens for events
         .listen((event) {
@@ -140,6 +139,9 @@ class Connector extends ChangeNotifier {
     }
     if (!await Permission.location.isGranted) {
       await Permission.location.request();
+    }
+    if (!await Permission.bluetoothConnect.isGranted) {
+      await Permission.bluetoothConnect.request();
     }
   }
 
