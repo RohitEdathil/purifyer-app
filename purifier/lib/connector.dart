@@ -4,7 +4,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:purifier/uuids.dart';
 
 class Connector extends ChangeNotifier {
-  static const String deviceId = "80:7D:3A:B8:2F:76";
+  static const String deviceId = "E0:5A:1B:75:E4:E6";
 
   // Global states
   bool connected = false;
